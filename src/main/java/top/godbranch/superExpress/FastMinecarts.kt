@@ -1,4 +1,4 @@
-package me.certainly1182.fastminecarts
+package top.godbranch.superExpress
 
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -10,18 +10,21 @@ import org.bukkit.event.vehicle.VehicleExitEvent
 import org.bukkit.event.vehicle.VehicleMoveEvent
 import org.bukkit.plugin.java.JavaPlugin
 
+
 class FastMinecarts : JavaPlugin(), Listener {
-    private val VANILLA_MAX_SPEED = 0.4
+    private val vanillaMaxSpeed = 0.4
     private var _blockMaxSpeeds = mutableMapOf<Material, Double>()
     private val railTypes = listOf(
         Material.RAIL, Material.POWERED_RAIL,
         Material.DETECTOR_RAIL, Material.ACTIVATOR_RAIL
     )
+
     override fun onEnable() {
         saveDefaultConfig()
         loadConfig()
         Bukkit.getPluginManager().registerEvents(this, this)
     }
+
     private fun loadConfig() {
         val blockConfig = config.getConfigurationSection("blocks") ?: return
         _blockMaxSpeeds.clear()
@@ -32,6 +35,7 @@ class FastMinecarts : JavaPlugin(), Listener {
             }
         }
     }
+
     @EventHandler(ignoreCancelled = true)
     fun onVehicleMove(event: VehicleMoveEvent) {
         if (event.vehicle !is Minecart) return
@@ -44,8 +48,12 @@ class FastMinecarts : JavaPlugin(), Listener {
         if (railBlock.type !in railTypes) return
 
         val blockBelow = railBlock.getRelative(0, -1, 0)
-        val blockMultiplier = _blockMaxSpeeds[blockBelow.type] ?: VANILLA_MAX_SPEED
-        minecart.maxSpeed = blockMultiplier
+        val blockMultiplier = _blockMaxSpeeds[blockBelow.type] ?: vanillaMaxSpeed
+
+        // 在主线程中更新矿车速度
+        FoliaScheduler.callSyncMethod(this) {
+            minecart.maxSpeed = blockMultiplier
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -54,8 +62,22 @@ class FastMinecarts : JavaPlugin(), Listener {
         if (event.exited !is Player) return
 
         val minecart = event.vehicle as Minecart
-        if (minecart.maxSpeed > VANILLA_MAX_SPEED) {
-            minecart.maxSpeed = VANILLA_MAX_SPEED
+        if (minecart.maxSpeed > vanillaMaxSpeed) {
+            // 在主线程中重置矿车速度
+            FoliaScheduler.callSyncMethod(this) {
+                minecart.maxSpeed = vanillaMaxSpeed
+            }
         }
     }
+
+    object FoliaScheduler {
+        fun callSyncMethod(plugin: JavaPlugin, task: () -> Unit) {
+            if (Bukkit.isPrimaryThread()) {
+                task()
+            } else {
+                Bukkit.getScheduler().runTask(plugin, Runnable { task() })
+            }
+        }
+    }
+
 }
