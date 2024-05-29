@@ -1,6 +1,6 @@
 # FastMinecarts Plugin
 [![Kotlin CI with Maven](https://github.com/0x002500/superExpress/actions/workflows/maven.yml/badge.svg)](https://github.com/0x002500/superExpress/actions/workflows/maven.yml)
-[![Modrinth Downloads](https://img.shields.io/modrinth/dt/######)](https://modrinth.com/plugin/######)
+![Modrinth Downloads](https://img.shields.io/modrinth/dt/VH6xs2AG)
 
 Simple plugin for Minecraft [Paper](https://papermc.io) servers that changes the speed of minecarts depending on the block beneath the rails.
 
