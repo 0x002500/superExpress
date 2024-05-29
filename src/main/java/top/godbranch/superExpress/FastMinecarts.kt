@@ -1,5 +1,7 @@
 package top.godbranch.superExpress
 
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Minecart
@@ -9,7 +11,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.vehicle.VehicleExitEvent
 import org.bukkit.event.vehicle.VehicleMoveEvent
 import org.bukkit.plugin.java.JavaPlugin
-
+import org.bukkit.scheduler.BukkitRunnable
 
 class FastMinecarts : JavaPlugin(), Listener {
     private val vanillaMaxSpeed = 0.4
@@ -18,6 +20,7 @@ class FastMinecarts : JavaPlugin(), Listener {
         Material.RAIL, Material.POWERED_RAIL,
         Material.DETECTOR_RAIL, Material.ACTIVATOR_RAIL
     )
+    private val playerActionBarTasks = mutableMapOf<Player, BukkitRunnable>()
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -50,10 +53,35 @@ class FastMinecarts : JavaPlugin(), Listener {
         val blockBelow = railBlock.getRelative(0, -1, 0)
         val blockMultiplier = _blockMaxSpeeds[blockBelow.type] ?: vanillaMaxSpeed
 
-        // 在主线程中更新矿车速度
+        // Update minecart speed on the main thread
         FoliaScheduler.callSyncMethod(this) {
             minecart.maxSpeed = blockMultiplier
         }
+        val velocity = minecart.velocity
+        // Send long-term action bar message
+        displayMinecartsSpeed(minecart.passengers.first() as Player, "Speed: ${velocity.length()}", 100) // Display for 5 seconds
+    }
+
+    private fun displayMinecartsSpeed(player: Player, message: String, durationTicks: Long) {
+        playerActionBarTasks[player]?.cancel()
+
+        val runnable = object : BukkitRunnable() {
+            var ticksLeft = durationTicks
+
+            override fun run() {
+                if (ticksLeft <= 0) {
+                    cancel()
+                    playerActionBarTasks.remove(player)
+                    return
+                }
+
+                player.sendActionBar(Component.text(message, NamedTextColor.YELLOW))
+                ticksLeft -= 20
+            }
+        }
+
+        runnable.runTaskTimer(this, 0, 20)
+        playerActionBarTasks[player] = runnable
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -63,7 +91,7 @@ class FastMinecarts : JavaPlugin(), Listener {
 
         val minecart = event.vehicle as Minecart
         if (minecart.maxSpeed > vanillaMaxSpeed) {
-            // 在主线程中重置矿车速度
+            // Reset minecart speed on the main thread
             FoliaScheduler.callSyncMethod(this) {
                 minecart.maxSpeed = vanillaMaxSpeed
             }
@@ -71,6 +99,7 @@ class FastMinecarts : JavaPlugin(), Listener {
     }
 
     object FoliaScheduler {
+        // Ensure tasks are executed on the main thread
         fun callSyncMethod(plugin: JavaPlugin, task: () -> Unit) {
             if (Bukkit.isPrimaryThread()) {
                 task()
@@ -79,5 +108,5 @@ class FastMinecarts : JavaPlugin(), Listener {
             }
         }
     }
-
 }
+

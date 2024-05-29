@@ -1,5 +1,5 @@
 name: SuperExpress
 version: '${project.version}'
-main: top.godbranch.superexpress.superExpress
+main: top.godbranch.superExpress.FastMinecarts
 api-version: 1.19
 folia-supported: true
