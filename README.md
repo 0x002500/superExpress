@@ -2,7 +2,7 @@
 [![Kotlin CI with Maven](https://github.com/0x002500/superExpress/actions/workflows/maven.yml/badge.svg)](https://github.com/0x002500/superExpress/actions/workflows/maven.yml)
 ![Modrinth Downloads](https://img.shields.io/modrinth/dt/VH6xs2AG)
 
-Simple plugin for Minecraft [Paper](https://papermc.io) servers that changes the speed of minecarts depending on the block beneath the rails.
+Simple plugin for Minecraft [Folia](https://papermc.io/software/folia) servers that changes the speed of minecarts depending on the block beneath the rails.
 
 ## Features
 - Configure which blocks affect speed.
@@ -10,7 +10,7 @@ Simple plugin for Minecraft [Paper](https://papermc.io) servers that changes the
 - Slow minecarts back to vanilla speed when player disembarks.
 ## Installation
 To install FastMinecarts, follow these steps:
-1. Download the plugin JAR file from [Modrinth](https://modrinth.com/plugin/#####) or the [Releases](https://github.com/certainly1182/FastMinecarts/releases) page.
+1. Download the plugin JAR file from [Modrinth](https://modrinth.com/plugin/superexpress) or the [Releases](https://github.com/0x002500/superExpress/releases) page.
 2. Place the JAR file in the plugins folder of your Paper (or Paper fork) server.
 3. Start the server and verify that the plugin loaded successfully.
 ## Configuration
