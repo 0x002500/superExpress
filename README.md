@@ -1,4 +1,4 @@
-# FastMinecarts Plugin
+# SuperExpress Plugin
 [![Kotlin CI with Maven](https://github.com/0x002500/superExpress/actions/workflows/maven.yml/badge.svg)](https://github.com/0x002500/superExpress/actions/workflows/maven.yml)
 ![Modrinth Downloads](https://img.shields.io/modrinth/dt/VH6xs2AG)
 
