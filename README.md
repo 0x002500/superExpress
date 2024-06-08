@@ -9,12 +9,12 @@ Simple plugin for Minecraft [Folia](https://papermc.io/software/folia) servers t
 - Choose the minecart speed for each block.
 - Slow minecarts back to vanilla speed when player disembarks.
 ## Installation
-To install FastMinecarts, follow these steps:
+To install SuperExpress, follow these steps:
 1. Download the plugin JAR file from [Modrinth](https://modrinth.com/plugin/superexpress) or the [Releases](https://github.com/0x002500/superExpress/releases) page.
-2. Place the JAR file in the plugins folder of your Paper (or Paper fork) server.
+2. Place the JAR file in the plugins folder of your Folia (or Folia fork) server.
 3. Start the server and verify that the plugin loaded successfully.
 ## Configuration
-The plugin can be configured via the `config.yml` file located in `plugins/FastMinecarts`.
+The plugin can be configured via the `config.yml` file located in `plugins/SuperExpress`.
 
 The following configuration options are available:
 
